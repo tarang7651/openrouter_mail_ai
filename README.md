@@ -2,7 +2,7 @@
 
 > Generate AI-powered email templates & subject lines directly inside Odoo's Mail Composer and Email Marketing — powered by **300+ models** via [OpenRouter](https://openrouter.ai).
 
-![Odoo 17](https://img.shields.io/badge/Odoo-17.0-875A7B?logo=odoo)
+![Odoo 17](https://img.shields.io/badge/Odoo-19.0-875A7B?logo=odoo)
 ![License](https://img.shields.io/badge/License-Proprietary-red)
 ![OpenRouter](https://img.shields.io/badge/Powered%20by-OpenRouter-orange)
 
@@ -38,7 +38,7 @@ Settings → OpenRouter AI section
 ## 🚀 Installation
 
 ### Requirements
-- Odoo **17.0**
+- Odoo **19.0**
 - Python `requests` library (pre-installed in most Odoo environments)
 - A free [OpenRouter API key](https://openrouter.ai/keys)
 
