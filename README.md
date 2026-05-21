@@ -1,4 +1,4 @@
-# 🤖 OpenRouter AI Mail Assistant — Odoo 17 Module
+# 🤖 OpenRouter AI Mail Assistant — Odoo 19 Module
 
 > Generate AI-powered email templates & subject lines directly inside Odoo's Mail Composer and Email Marketing — powered by **300+ models** via [OpenRouter](https://openrouter.ai).
 

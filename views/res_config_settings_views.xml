@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_openrouter" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.openrouter.mail.ai</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="OpenRouter Mail AI Studio" string="OpenRouter Mail AI Studio" name="openrouter_mail_ai" logo="/openrouter_mail_ai/static/description/icon.png">
+                    <block title="OpenRouter Mail AI Studio Configuration" name="openrouter_settings">
+                        <setting id="openrouter_api_key_setting" string="API Key" help="Your secret key from openrouter.ai">
+                            <field name="openrouter_api_key" password="True" placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxx"/>
+                        </setting>
+                        <setting id="openrouter_model_setting" string="Default AI Model" help="Pre-selected model when the AI generator opens">
+                            <field name="openrouter_default_model"/>
+                        </setting>
+                        <setting id="openrouter_site_name_setting" string="App / Site Name" help="Shown on your OpenRouter usage dashboard">
+                            <field name="openrouter_site_name" placeholder="My Company Odoo"/>
+                        </setting>
+                        <setting id="unsplash_access_key_setting" string="Unsplash Access Key" help="Used to fetch dynamic images from Unsplash API for AI templates">
+                            <field name="unsplash_access_key" password="True" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

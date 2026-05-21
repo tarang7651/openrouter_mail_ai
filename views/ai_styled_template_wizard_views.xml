@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ai_styled_template_wizard_view_form" model="ir.ui.view">
+        <field name="name">ai.styled.template.wizard.form</field>
+        <field name="model">ai.styled.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="✨ AI Template Generator (By Style)">
+                <sheet>
+
+                    <!-- INPUT SECTION (always visible) -->
+                    <group string="Create a Template" col="2">
+                        <field name="is_generated" invisible="1"/>
+                        <!-- <field name="generated_template_xml" invisible="1"/> -->
+
+                        <field name="template_style" 
+                               string="Template Style"
+                               required="True"
+                               options="{'no_create': True}"/>
+
+                        <field name="model_id" 
+                               string="AI Model"
+                               required="True"/>
+
+                        <field name="tone"
+                               string="Tone"
+                               required="True"/>
+
+                        <field name="include_subject" 
+                               string="Generate Subject Line"/>
+
+                        <field name="description"
+                               colspan="2"
+                               nolabel="1"
+                               widget="text"
+                               required="True"
+                               placeholder="Describe what you want in this template... Be specific about the goal, audience, key points, offers, or calls-to-action."/>
+                    </group>
+
+                    <!-- GENERATE BUTTON (shown when not yet generated) -->
+                    <div class="text-center mt8 mb16" invisible="is_generated">
+                        <button name="action_generate"
+                                type="object"
+                                string="✨ Generate Template"
+                                class="btn btn-primary btn-lg"
+                                icon="fa-magic"
+                                data-hotkey="g"/>
+                    </div>
+
+                    <!-- RESULT SECTION (shown after generation) -->
+                    <group string="Generated Template" invisible="not is_generated">
+
+                        <field name="generated_subject"
+                               string="Subject Line"
+                               invisible="not include_subject"
+                               colspan="2"/>
+
+                        <field name="generated_body"
+                               string="Template Body"
+                               widget="html"
+                               readonly="1"
+                               colspan="2"
+                               options="{'resizable': true, 'collaborative': false}"/>
+
+                        <!-- Token usage info -->
+                        <div class="text-muted small mt4" colspan="2"
+                             invisible="not tokens_used">
+                            <i class="fa fa-info-circle"/> Model:
+                            <field name="model_used" readonly="1" nolabel="1" class="d-inline"/>
+                            — Tokens used:
+                            <field name="tokens_used" readonly="1" nolabel="1" class="d-inline"/>
+                        </div>
+
+                    </group>
+
+                </sheet>
+
+                <footer>
+                    <!-- Before generation -->
+                    <button name="action_generate"
+                            type="object"
+                            string="Generate"
+                            class="btn-primary"
+                            invisible="is_generated"/>
+
+                    <!-- After generation -->
+                    <button name="action_create_template"
+                            type="object"
+                            string="💾 Save as Template"
+                            class="btn-primary"
+                            invisible="not is_generated"
+                            title="Create a new mail template from this generated design"/>
+
+                    <button name="action_regenerate"
+                            type="object"
+                            string="🔄 Regenerate"
+                            class="btn-secondary"
+                            invisible="not is_generated"/>
+
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="action_ai_styled_template_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Template (By Style)</field>
+        <field name="res_model">ai.styled.template.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'dialog_size': 'large'}</field>
+    </record>
+
+</odoo>

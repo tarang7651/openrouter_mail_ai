@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── AI Button in Email Marketing form ────────────────────────────── -->
+    <record id="view_mass_mailing_form_openrouter" model="ir.ui.view">
+        <field name="name">mailing.mailing.form.inherit.openrouter</field>
+        <field name="model">mailing.mailing</field>
+        <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add AI tools row just below subject -->
+            <xpath expr="//field[@name='subject']" position="after">
+                <div class="o_form_label oe_edit_only">AI Tools</div>
+                <div class="oe_edit_only d-flex flex-wrap align-items-center gap-2 mb-2" name="openrouter_ai_tools_row">
+                    <button name="action_open_ai_subject_wizard"
+                            type="object"
+                            string="✨ AI Subject Ideas"
+                            class="btn btn-sm btn-outline-primary"
+                            title="Generate 5 AI-powered subject line variations"/>
+                    <button name="action_open_ai_styled_wizard"
+                            type="object"
+                            string="🎨 AI Template by Style"
+                            class="btn btn-sm btn-outline-info"
+                            title="Generate a ready-to-use email template by style (promotional, newsletter, welcome, etc.)"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ── AI Subject Line Wizard view ─────────────────────────────────── -->
+    <record id="ai_subject_wizard_view_form" model="ir.ui.view">
+        <field name="name">ai.subject.wizard.form</field>
+        <field name="model">ai.subject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="✨ AI Subject Line Generator">
+                <sheet>
+                    <group string="Campaign Context">
+                        <field name="mailing_id"      invisible="1"/>
+                        <field name="compose_id"      invisible="1"/>
+                        <field name="is_generated"    invisible="1"/>
+                        <field name="current_subject" string="Current Subject" readonly="1"/>
+                        <field name="model_id"        string="AI Model"/>
+                        <field name="context_hint"
+                               string="Describe the campaign (optional)"
+                               colspan="2"
+                               placeholder="e.g. End-of-year sale — 30% off all subscriptions until Dec 31"/>
+                    </group>
+
+                    <!-- Results -->
+                    <group string="Generated Subject Lines" invisible="not is_generated">
+                        <div class="o_field_widget o_wrap_field" colspan="2">
+
+                            <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+                                 invisible="not variant_1">
+                                <field name="variant_1" readonly="1" nolabel="1"
+                                       class="flex-grow-1 me-2"/>
+                                <button name="action_use_variant_1" type="object"
+                                        string="Use" class="btn btn-sm btn-primary"/>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+                                 invisible="not variant_2">
+                                <field name="variant_2" readonly="1" nolabel="1"
+                                       class="flex-grow-1 me-2"/>
+                                <button name="action_use_variant_2" type="object"
+                                        string="Use" class="btn btn-sm btn-primary"/>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+                                 invisible="not variant_3">
+                                <field name="variant_3" readonly="1" nolabel="1"
+                                       class="flex-grow-1 me-2"/>
+                                <button name="action_use_variant_3" type="object"
+                                        string="Use" class="btn btn-sm btn-primary"/>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+                                 invisible="not variant_4">
+                                <field name="variant_4" readonly="1" nolabel="1"
+                                       class="flex-grow-1 me-2"/>
+                                <button name="action_use_variant_4" type="object"
+                                        string="Use" class="btn btn-sm btn-primary"/>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+                                 invisible="not variant_5">
+                                <field name="variant_5" readonly="1" nolabel="1"
+                                       class="flex-grow-1 me-2"/>
+                                <button name="action_use_variant_5" type="object"
+                                        string="Use" class="btn btn-sm btn-primary"/>
+                            </div>
+
+                        </div>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_generate_subjects"
+                            type="object"
+                            string="✨ Generate Subject Lines"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

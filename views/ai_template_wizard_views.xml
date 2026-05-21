@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ai_template_wizard_view_form" model="ir.ui.view">
+        <field name="name">ai.template.wizard.form</field>
+        <field name="model">ai.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="✨ AI Write Mail">
+                <sheet>
+                    <group string="Generate Email" col="2">
+                        <field name="is_generated" invisible="1"/>
+                        <field name="source_model" invisible="1"/>
+                        <field name="source_id" invisible="1"/>
+
+                        <field name="model_id" string="AI Model" required="True"/>
+                        <field name="tone" string="Tone" required="True"/>
+                        <field name="include_subject" string="Generate Subject"/>
+
+                        <field name="description"
+                               colspan="2"
+                               nolabel="1"
+                               widget="text"
+                               required="True"
+                               placeholder="Describe the email you want to generate or rewrite..."/>
+                    </group>
+
+                    <div class="text-center mt8 mb16" invisible="is_generated">
+                        <button name="action_generate"
+                                type="object"
+                                string="✨ Generate Email"
+                                class="btn btn-primary btn-lg"
+                                icon="fa-magic"/>
+                    </div>
+
+                    <group string="Generated Email" invisible="not is_generated">
+                        <field name="generated_subject"
+                               string="Subject"
+                               invisible="not include_subject"
+                               colspan="2"/>
+                        <field name="generated_body"
+                               string="Email Body"
+                               widget="html"
+                               readonly="1"
+                               colspan="2"
+                               options="{'resizable': true, 'collaborative': false}"/>
+
+                        <div class="text-muted small mt4" colspan="2" invisible="not tokens_used">
+                            <i class="fa fa-info-circle"/> Model:
+                            <field name="model_used" readonly="1" nolabel="1" class="d-inline"/>
+                            — Tokens used:
+                            <field name="tokens_used" readonly="1" nolabel="1" class="d-inline"/>
+                        </div>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_generate"
+                            type="object"
+                            string="Generate"
+                            class="btn-primary"
+                            invisible="is_generated"/>
+                    <button name="action_use_email"
+                            type="object"
+                            string="✅ Use This Email"
+                            class="btn-primary"
+                            invisible="not is_generated"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
