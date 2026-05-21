@@ -3,7 +3,7 @@
 > Generate AI-powered email templates & subject lines directly inside Odoo's Mail Composer and Email Marketing — powered by **300+ models** via [OpenRouter](https://openrouter.ai).
 
 ![Odoo 17](https://img.shields.io/badge/Odoo-17.0-875A7B?logo=odoo)
-![License](https://img.shields.io/badge/License-LGPL--3-blue)
+![License](https://img.shields.io/badge/License-Proprietary-red)
 ![OpenRouter](https://img.shields.io/badge/Powered%20by-OpenRouter-orange)
 
 ---
@@ -166,7 +166,11 @@ git push origin feature/your-feature-name
 
 ## 📄 License
 
-[LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.html) — Free to use, modify, and distribute.
+Proprietary license. No distribution, resale, sublicensing, or public redistribution is permitted without explicit written permission from the copyright owner.
+
+## © Copyright
+
+Copyright (c) Tarang Kushwaha. All rights reserved.
 
 ---
 

@@ -16,7 +16,7 @@
     """,
     'author': 'Tarang Kushwaha',
     'website': 'https://github.com/yourname/openrouter_mail_ai',
-    'license': 'LGPL-3',
+    'license': 'OPL-1',
     'depends': ['mail', 'mass_mailing', 'mass_mailing_themes', 'base_setup'],
     'data': [
         'security/ir.model.access.csv',
