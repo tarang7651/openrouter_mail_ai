@@ -48,6 +48,11 @@ TONE_OPTIONS = [
     ('urgent', '⚡ Urgent'),
 ]
 
+OPENROUTER_TIMEOUT_SECONDS = 35
+OPENROUTER_MAX_TOKENS = 2200
+UNSPLASH_TIMEOUT_SECONDS = 8
+IMAGE_DOWNLOAD_TIMEOUT_SECONDS = 8
+
 
 # =========================================================
 # CURATED REAL IMAGES
@@ -159,54 +164,116 @@ UNSPLASH_STYLE_QUERIES = {
 
 DESIGN_DIRECTIONS = [
     {
+        'key': 'editorial_grid',
         'name': 'Editorial Grid',
+        'fits': ['newsletter', 'educational', 'announcement'],
         'layout': 'Asymmetric two-column rhythm with alternating image/text blocks.',
         'palette': 'Muted neutrals with one sharp accent color.',
         'cta': 'Minimal outlined CTA near section transitions.',
         'sections': 'Start with title, then stagger content blocks and finish with a concise footer.',
+        'motif': 'Magazine-like rhythm with clear editorial hierarchy.',
     },
     {
+        'key': 'bold_campaign',
         'name': 'Bold Campaign',
+        'fits': ['promotional', 'announcement', 'event'],
         'layout': 'Large hero statement, strong section separators, high visual hierarchy.',
         'palette': 'High contrast base with one bright campaign accent.',
         'cta': 'Prominent solid CTA repeated at most twice.',
         'sections': 'Hero, benefit stack, social proof, then closing offer.',
+        'motif': 'High-energy launch style with conversion-first hierarchy.',
     },
     {
+        'key': 'storytelling_flow',
         'name': 'Storytelling Flow',
+        'fits': ['welcome', 'feedback', 'educational'],
         'layout': 'Narrative progression from problem to outcome using alternating media blocks.',
         'palette': 'Warm background tones and dark readable typography.',
         'cta': 'Contextual CTA that feels like next step in story.',
         'sections': 'Intro, challenge, solution, result, CTA, footer.',
+        'motif': 'Narrative arc with human-centered transitions.',
     },
     {
+        'key': 'product_spotlight',
         'name': 'Product Spotlight',
+        'fits': ['promotional', 'transactional', 'announcement'],
         'layout': 'Feature-first composition with cards and compact supporting copy.',
         'palette': 'Clean bright canvas with colored feature badges.',
         'cta': 'Button attached to product/feature reveal sections.',
         'sections': 'Spotlight hero, feature rows, comparison/benefit row, CTA, footer.',
+        'motif': 'Product-first modular sections with clear feature framing.',
     },
     {
+        'key': 'magazine_digest',
         'name': 'Magazine Digest',
+        'fits': ['newsletter', 'educational', 'announcement'],
         'layout': 'Modular blocks with clear dividers and digest-like scanning flow.',
         'palette': 'Light editorial base with subtle contrast bands.',
         'cta': 'Secondary CTA mid-way, primary CTA at end.',
         'sections': 'Header, highlights, article-like blocks, quick stats, close.',
+        'motif': 'Digest format with stacked stories and side highlights.',
     },
     {
+        'key': 'minimal_premium',
         'name': 'Minimal Premium',
+        'fits': ['welcome', 'transactional', 'feedback'],
         'layout': 'Whitespace-heavy, restrained typography, selective imagery.',
         'palette': 'Monochrome base with elegant accent.',
         'cta': 'Single strong CTA near bottom.',
         'sections': 'Calm intro, 2-3 focused value sections, final conversion block.',
+        'motif': 'Luxury minimal tone with calm spacing and refined type rhythm.',
     },
     {
+        'key': 'data_story',
         'name': 'Data Story',
+        'fits': ['educational', 'announcement', 'transactional'],
         'layout': 'Insight-led sections with metric callouts and supporting imagery.',
         'palette': 'Dark-on-light analytics aesthetic.',
         'cta': 'CTA attached to performance/result section.',
         'sections': 'Headline, metric band, interpretation blocks, action footer.',
+        'motif': 'Insight narrative with metrics, proof and action.',
     },
+    {
+        'key': 'event_agenda',
+        'name': 'Event Agenda',
+        'fits': ['event', 'announcement', 'reminder'],
+        'layout': 'Top hero + timeline/agenda blocks + speaker or highlight cards.',
+        'palette': 'Vibrant stage accents on neutral canvas.',
+        'cta': 'RSVP CTA with urgency cues and date emphasis.',
+        'sections': 'Event headline, agenda timeline, highlights, CTA, logistics footer.',
+        'motif': 'Conference invite feel with structured agenda flow.',
+    },
+    {
+        'key': 'receipt_clean',
+        'name': 'Receipt Clean',
+        'fits': ['transactional', 'reminder'],
+        'layout': 'Straight single-column structure with compact summary modules.',
+        'palette': 'High readability grayscale with subtle status colors.',
+        'cta': 'Contextual action button for receipt/order/account step.',
+        'sections': 'Header, summary, detailed rows, support/help, footer.',
+        'motif': 'Crisp transactional format with trust-first clarity.',
+    },
+    {
+        'key': 'community_warm',
+        'name': 'Community Warm',
+        'fits': ['welcome', 'feedback', 'newsletter'],
+        'layout': 'Friendly intro, people-focused content rows, and social/community close.',
+        'palette': 'Warm light backgrounds with approachable accents.',
+        'cta': 'Invitation-style CTA encouraging engagement.',
+        'sections': 'Welcome, value highlights, community block, CTA, signature/footer.',
+        'motif': 'Human and community-driven visual storytelling.',
+    },
+]
+
+SECTION_BLUEPRINTS = [
+    ('hero_benefits_proof', 'Hero > Benefit cards > Social proof > CTA > Footer'),
+    ('problem_solution_results', 'Problem > Solution > Feature split > Result metrics > CTA > Footer'),
+    ('digest_modular', 'Editorial header > 3 modular stories > Stat band > CTA > Footer'),
+    ('timeline_event', 'Hero > Agenda/timeline > Speaker/highlight blocks > RSVP CTA > Logistics footer'),
+    ('minimal_focus', 'Quiet intro > 2 focused value sections > Single CTA > Trust block > Footer'),
+    ('transactional_clean', 'Header > Summary box > Detail rows > Next-step CTA > Support footer'),
+    ('comparison_stack', 'Hero > Before/After comparison > 3 benefits > Proof > CTA > Footer'),
+    ('qa_explainer', 'Question-led opener > explanation blocks > insight card > CTA > Footer'),
 ]
 
 SNIPPET_ALIASES = {
@@ -283,6 +350,12 @@ class AiStyledTemplateWizard(models.TransientModel):
         default=True,
     )
 
+    fast_mode = fields.Boolean(
+        string='Fast mode (recommended)',
+        default=True,
+        help='Skips downloading external images as attachments to keep generation and apply faster.',
+    )
+
     mark_as_favorite = fields.Boolean(
         string='Mark as favorite template',
         default=True,
@@ -308,6 +381,14 @@ class AiStyledTemplateWizard(models.TransientModel):
     model_used = fields.Char(
         readonly=True
     )
+
+    generation_count = fields.Integer(
+        default=0
+    )
+
+    last_direction_key = fields.Char()
+
+    last_blueprint_key = fields.Char()
 
 
     # =====================================================
@@ -377,9 +458,87 @@ class AiStyledTemplateWizard(models.TransientModel):
         )
 
     @staticmethod
-    def _pick_design_direction():
-        direction = random.choice(DESIGN_DIRECTIONS)
-        seed = uuid4().hex[:10]
+    def _contains_any(text, words):
+        source = (text or '').lower()
+        return any(word in source for word in words)
+
+    def _extract_prompt_signals(self, description):
+        source = (description or '').strip()
+        lower = source.lower()
+
+        industry_signals = []
+        industry_map = {
+            'saas': ['saas', 'software', 'platform', 'automation', 'dashboard'],
+            'ecommerce': ['ecommerce', 'shop', 'store', 'product', 'checkout'],
+            'education': ['course', 'training', 'learning', 'academy', 'tutorial', 'webinar'],
+            'event': ['event', 'summit', 'conference', 'workshop', 'meetup', 'rsvp'],
+            'finance': ['finance', 'invoice', 'billing', 'payment', 'receipt', 'subscription'],
+            'community': ['community', 'member', 'welcome', 'newsletter', 'engage'],
+        }
+        for label, words in industry_map.items():
+            if self._contains_any(lower, words):
+                industry_signals.append(label)
+
+        visual_signals = []
+        visual_map = {
+            'minimal': ['minimal', 'clean', 'simple', 'premium', 'luxury'],
+            'bold': ['bold', 'vibrant', 'neon', 'dramatic', 'cinematic'],
+            'editorial': ['editorial', 'magazine', 'digest', 'newspaper'],
+            'data': ['data', 'analytics', 'insight', 'metric', 'kpi'],
+            'human': ['human', 'people', 'story', 'community', 'friendly'],
+        }
+        for label, words in visual_map.items():
+            if self._contains_any(lower, words):
+                visual_signals.append(label)
+
+        cta_signals = []
+        if self._contains_any(lower, ['buy', 'offer', 'sale', 'discount', 'trial', 'demo']):
+            cta_signals.append('conversion')
+        if self._contains_any(lower, ['register', 'rsvp', 'join', 'reserve']):
+            cta_signals.append('registration')
+        if self._contains_any(lower, ['read', 'discover', 'learn', 'explore']):
+            cta_signals.append('education')
+
+        return {
+            'industry': industry_signals or ['general'],
+            'visual': visual_signals or ['balanced'],
+            'cta': cta_signals or ['engagement'],
+            'keywords': [word for word in re.findall(r'[a-zA-Z]{4,}', source)[:18]],
+        }
+
+    def _pick_design_direction(self, compact_description, iteration):
+        rng = random.SystemRandom()
+        description = (compact_description or '').lower()
+        style = (self.template_style or '').lower()
+
+        preferred = [
+            direction for direction in DESIGN_DIRECTIONS
+            if style in direction.get('fits', [])
+        ]
+
+        if self._contains_any(description, ['event', 'agenda', 'speaker', 'rsvp']):
+            preferred += [d for d in DESIGN_DIRECTIONS if d.get('key') == 'event_agenda']
+        if self._contains_any(description, ['receipt', 'invoice', 'payment', 'transaction']):
+            preferred += [d for d in DESIGN_DIRECTIONS if d.get('key') == 'receipt_clean']
+        if self._contains_any(description, ['newsletter', 'weekly', 'digest', 'editorial']):
+            preferred += [d for d in DESIGN_DIRECTIONS if d.get('key') == 'magazine_digest']
+        if self._contains_any(description, ['metric', 'analytics', 'kpi', 'report']):
+            preferred += [d for d in DESIGN_DIRECTIONS if d.get('key') == 'data_story']
+        if self._contains_any(description, ['welcome', 'community', 'onboarding']):
+            preferred += [d for d in DESIGN_DIRECTIONS if d.get('key') == 'community_warm']
+
+        candidate_map = {direction['key']: direction for direction in (preferred or DESIGN_DIRECTIONS)}
+        candidates = list(candidate_map.values())
+
+        if self.last_direction_key and len(candidates) > 1:
+            non_repeated = [d for d in candidates if d.get('key') != self.last_direction_key]
+            if non_repeated:
+                candidates = non_repeated
+
+        direction_index = ((iteration - 1) + rng.randrange(len(candidates))) % len(candidates)
+        direction = candidates[direction_index] if candidates else rng.choice(DESIGN_DIRECTIONS)
+
+        seed = f"{uuid4().hex[:6]}-{iteration}"
         snippet_candidates = [
             's_title',
             's_cover',
@@ -391,14 +550,37 @@ class AiStyledTemplateWizard(models.TransientModel):
             's_text_highlight',
             's_hr',
             's_footer_social',
+            's_mail_block_header_social',
         ]
-        random.shuffle(snippet_candidates)
-        selected = snippet_candidates[: random.randint(6, 9)]
+        rng.shuffle(snippet_candidates)
+        selected = snippet_candidates[: rng.randint(7, 10)]
         if 's_call_to_action' not in selected:
             selected.append('s_call_to_action')
         if 's_footer_social' not in selected:
             selected.append('s_footer_social')
         return seed, direction, selected
+
+    def _pick_section_blueprint(self, iteration):
+        rng = random.SystemRandom()
+        candidates = list(SECTION_BLUEPRINTS)
+        if self.last_blueprint_key and len(candidates) > 1:
+            filtered = [bp for bp in candidates if bp[0] != self.last_blueprint_key]
+            if filtered:
+                candidates = filtered
+        index = ((iteration - 1) + rng.randrange(len(candidates))) % len(candidates)
+        return candidates[index]
+
+    @staticmethod
+    def _compact_description(description, max_chars=1800):
+        lines = [
+            line.strip()
+            for line in (description or '').splitlines()
+            if line.strip()
+        ]
+        compact = '\n'.join(lines)
+        if len(compact) > max_chars:
+            return compact[:max_chars].rstrip()
+        return compact
 
 
     # =====================================================
@@ -421,13 +603,23 @@ class AiStyledTemplateWizard(models.TransientModel):
             'Generic'
         )
 
-        seed, direction, selected_snippets = self._pick_design_direction()
+        iteration = (self.generation_count or 0) + 1
+        compact_description = self._compact_description(self.description)
+        prompt_signals = self._extract_prompt_signals(compact_description)
+        seed, direction, selected_snippets = self._pick_design_direction(compact_description, iteration)
+        blueprint_key, blueprint_flow = self._pick_section_blueprint(iteration)
         snippet_line = '\n'.join(
             f'- {snippet}'
             for snippet in selected_snippets
         )
+        signal_text = json.dumps(prompt_signals, ensure_ascii=True)
+        avoid_previous = (
+            f"\n19. ANTI-REPEAT RULE:\n"
+            f"    - Do NOT reuse previous direction: {self.last_direction_key or 'none'}\n"
+            f"    - Do NOT reuse previous layout blueprint: {self.last_blueprint_key or 'none'}\n"
+        )
 
-        return f"""
+        prompt = f"""
 You are an expert Odoo 19 email template designer.
 
 Return STRICTLY one JSON object:
@@ -503,11 +695,23 @@ IMPORTANT RULES:
 
 18. APPLY THIS RANDOM CREATIVE BRIEF EXACTLY FOR THIS GENERATION:
     - Diversity Seed: {seed}
+    - Iteration: {iteration}
     - Direction: {direction['name']}
     - Layout: {direction['layout']}
     - Palette Intent: {direction['palette']}
     - CTA Behavior: {direction['cta']}
     - Section Flow: {direction['sections']}
+    - Visual Motif: {direction['motif']}
+    - Blueprint Key: {blueprint_key}
+    - Blueprint Flow: {blueprint_flow}
+
+{avoid_previous}
+
+20. PROMPT SIGNALS (NON-NEGOTIABLE):
+    - Use this as the primary interpretation layer:
+      {signal_text}
+    - Map headline, section ordering, visuals, and CTA copy to these signals.
+    - If prompt signals conflict with generic style defaults, signals win.
 
 Return ONLY snippet blocks like <section ... data-snippet="...">...</section>
 or compatible snippet div blocks (example: s_hr separator).
@@ -519,10 +723,11 @@ Tone:
 {tone_label}
 
 Requirements:
-{self.description.strip()}
+{compact_description}
 
 Return ONLY JSON.
 """.strip()
+        return prompt, direction.get('key'), blueprint_key
 
 
     # =====================================================
@@ -555,10 +760,14 @@ Return ONLY JSON.
                             'content': prompt,
                         }
                     ],
-                    'max_tokens': 3000,
+                    'max_tokens': OPENROUTER_MAX_TOKENS,
+                    'temperature': 1.05,
+                    'top_p': 0.92,
+                    'presence_penalty': 0.55,
+                    'frequency_penalty': 0.35,
                 },
 
-                timeout=45,
+                timeout=OPENROUTER_TIMEOUT_SECONDS,
             )
 
             response.raise_for_status()
@@ -716,7 +925,7 @@ Return ONLY JSON.
                     'orientation': 'landscape',
                     'content_filter': 'high',
                 },
-                timeout=20,
+                timeout=UNSPLASH_TIMEOUT_SECONDS,
             )
             response.raise_for_status()
             payload = response.json()
@@ -798,7 +1007,7 @@ Return ONLY JSON.
 
     def _download_image_to_attachment(self, src_url):
         try:
-            response = requests.get(src_url, timeout=20)
+            response = requests.get(src_url, timeout=IMAGE_DOWNLOAD_TIMEOUT_SECONDS)
             response.raise_for_status()
         except Exception as exc:
             _logger.warning('Failed downloading image URL %s: %s', src_url, exc)
@@ -1299,7 +1508,7 @@ Return ONLY JSON.
 
         self.ensure_one()
 
-        prompt = self._build_prompt()
+        prompt, direction_key, blueprint_key = self._build_prompt()
 
         data = self._call_openrouter(prompt)
 
@@ -1315,9 +1524,10 @@ Return ONLY JSON.
             html
         )
 
-        html = self._materialize_external_images(
-            html
-        )
+        if not self.fast_mode:
+            html = self._materialize_external_images(
+                html
+            )
 
         html = self._enforce_text_visibility_guardrails(
             html
@@ -1362,6 +1572,9 @@ Return ONLY JSON.
             'generated_body': mailing_html,
             'generated_body_raw': raw_mailing_html,
             'is_generated': True,
+            'generation_count': (self.generation_count or 0) + 1,
+            'last_direction_key': direction_key,
+            'last_blueprint_key': blueprint_key,
             'tokens_used': usage.get(
                 'total_tokens',
                 0
@@ -1459,7 +1672,8 @@ Return ONLY JSON.
             else self._to_mailing_layout_arch(source_html)
         )
 
-        html = self._materialize_external_images(html)
+        if not self.fast_mode:
+            html = self._materialize_external_images(html)
 
         html = self._enforce_text_visibility_guardrails(html)
 

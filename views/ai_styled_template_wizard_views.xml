@@ -28,6 +28,9 @@
                         <field name="include_subject"
                                string="Generate Subject Line"/>
 
+                        <field name="fast_mode"
+                               string="Fast mode (recommended)"/>
+
                         <field name="mark_as_favorite"
                                string="Mark as favorite template"/>
 
