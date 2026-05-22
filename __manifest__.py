@@ -25,6 +25,8 @@
         'views/ai_styled_template_wizard_views.xml',
         'views/mail_compose_message_views.xml',
         'views/mailing_mailing_views.xml',
+        'wizard/mailing_insert_html_wiz_views.xml',
+
     ],
     'installable': True,
     'application': True,

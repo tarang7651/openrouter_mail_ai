@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_ai_template_wizard_user,ai.template.wizard user,model_ai_template_wizard,base.group_user,1,1,1,1
 access_ai_styled_template_wizard_user,ai.styled.template.wizard user,model_ai_styled_template_wizard,base.group_user,1,1,1,1
 access_ai_subject_wizard_user,ai.subject.wizard user,model_ai_subject_wizard,base.group_user,1,1,1,1
+access_mailing_insert_html_wizard_user,mailing.insert.html.wizard user,model_mailing_insert_html_wizard,base.group_user,1,1,1,1

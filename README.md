@@ -13,7 +13,8 @@
 | Feature | Where |
 |---|---|
 | **AI Email Body Generator** | Mail Composer (Chatter) |
-| **AI Email Body Generator** | Email Marketing (`mailing.mailing`) |
+| **AI Template by Style** (generate + apply to current mailing) | Email Marketing (`mailing.mailing`) |
+| **Insert HTML** (paste raw HTML and render as template) | Email Marketing (`mailing.mailing`) |
 | **AI Subject Line Generator** (5 variants, pick best) | Email Marketing |
 | **Multi-model selector** — GPT-4o, Claude, Gemini, Llama, Mistral, DeepSeek | All wizards |
 | **Tone selector** — Professional, Casual, Formal, Persuasive, Empathetic, Urgent | All wizards |
@@ -29,7 +30,7 @@
 
 ```
 Mail Composer → "✨ Generate with AI" button → Wizard → Generated body auto-fills
-Email Marketing → "✨ AI Subject Ideas" + "✨ AI Write Email" buttons
+Email Marketing → "✨ AI Subject Ideas" + "🎨 AI Template by Style" + "📄 Insert HTML" buttons
 Settings → OpenRouter AI section
 ```
 
@@ -82,7 +83,16 @@ sudo systemctl restart odoo
 ### In Email Marketing
 1. Open **Email Marketing → Campaigns → New**
 2. Click **✨ AI Subject Ideas** to get 5 subject line options → click **Use** on your favourite
-3. Click **✨ AI Write Email** to generate the full body
+3. Click **🎨 AI Template by Style** to generate template design and apply it to current mailing
+4. Optional: enable **Mark as favorite template** before applying
+5. Click **📄 Insert HTML** to paste full raw HTML (including full `<html>/<body>` documents)
+6. Click **Apply** to convert and render it in mailing body (instead of showing raw code)
+
+### Insert HTML (Latest)
+1. Open a mailing record and click **📄 Insert HTML**
+2. Paste your HTML code in the plain text input (no rich text editor formatting)
+3. Click **Apply**
+4. The module normalizes legacy escaped HTML, extracts `<body>` content from full documents, and writes valid `body_arch/body_html` for Odoo editor rendering
 
 ---
 

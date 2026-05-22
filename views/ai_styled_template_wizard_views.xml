@@ -11,14 +11,13 @@
                     <!-- INPUT SECTION (always visible) -->
                     <group string="Create a Template" col="2">
                         <field name="is_generated" invisible="1"/>
-                        <!-- <field name="generated_template_xml" invisible="1"/> -->
 
-                        <field name="template_style" 
+                        <field name="template_style"
                                string="Template Style"
                                required="True"
                                options="{'no_create': True}"/>
 
-                        <field name="model_id" 
+                        <field name="model_id"
                                string="AI Model"
                                required="True"/>
 
@@ -26,8 +25,11 @@
                                string="Tone"
                                required="True"/>
 
-                        <field name="include_subject" 
+                        <field name="include_subject"
                                string="Generate Subject Line"/>
+
+                        <field name="mark_as_favorite"
+                               string="Mark as favorite template"/>
 
                         <field name="description"
                                colspan="2"
@@ -58,13 +60,11 @@
                         <field name="generated_body"
                                string="Template Body"
                                widget="html"
-                               readonly="1"
                                colspan="2"
                                options="{'resizable': true, 'collaborative': false}"/>
 
                         <!-- Token usage info -->
-                        <div class="text-muted small mt4" colspan="2"
-                             invisible="not tokens_used">
+                        <div class="text-muted small mt4" colspan="2" invisible="not tokens_used">
                             <i class="fa fa-info-circle"/> Model:
                             <field name="model_used" readonly="1" nolabel="1" class="d-inline"/>
                             — Tokens used:
@@ -86,10 +86,10 @@
                     <!-- After generation -->
                     <button name="action_create_template"
                             type="object"
-                            string="💾 Save as Template"
+                            string="✅ Apply Template"
                             class="btn-primary"
                             invisible="not is_generated"
-                            title="Create a new mail template from this generated design"/>
+                            title="Apply to current mailing (creates a new record only if no active mailing is available)"/>
 
                     <button name="action_regenerate"
                             type="object"

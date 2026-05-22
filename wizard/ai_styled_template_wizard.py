@@ -283,6 +283,11 @@ class AiStyledTemplateWizard(models.TransientModel):
         default=True,
     )
 
+    mark_as_favorite = fields.Boolean(
+        string='Mark as favorite template',
+        default=True,
+    )
+
 
     generated_subject = fields.Char()
 
@@ -1441,14 +1446,6 @@ Return ONLY JSON.
                     .exists()
                 )
 
-        mailing_model_id = (
-            source_mailing.mailing_model_id.id
-            if source_mailing
-            else self.env.ref(
-                'mass_mailing.model_mailing_list'
-            ).id
-        )
-
         template_name = (
             self.generated_subject
             or 'AI Generated Template'
@@ -1474,25 +1471,6 @@ Return ONLY JSON.
                 flags=re.DOTALL
             ).strip()
 
-        vals = {
-            'name': f'AI Template: {template_name}',
-            'subject': template_name,
-            'mailing_type': 'mail',
-            'mailing_model_id': mailing_model_id,
-            'favorite': True,
-            'user_id': self.env.user.id,
-            'body_arch': html,
-            'body_html': html,
-        }
-
-        self.env[
-            'mailing.mailing'
-        ].create(vals)
-
-        # =============================================
-        # APPLY TO CURRENT MAILING
-        # =============================================
-
         if source_mailing:
 
             update_vals = {
@@ -1509,9 +1487,38 @@ Return ONLY JSON.
                     self.generated_subject
                 )
 
+            if self.mark_as_favorite:
+                update_vals['favorite'] = True
+
             source_mailing.write(
                 update_vals
             )
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+            }
+
+        # If the wizard is opened without a current mailing context,
+        # keep the previous fallback behavior and create a new template record.
+        mailing_model_id = self.env.ref(
+            'mass_mailing.model_mailing_list'
+        ).id
+
+        vals = {
+            'name': f'AI Template: {template_name}',
+            'subject': template_name,
+            'mailing_type': 'mail',
+            'mailing_model_id': mailing_model_id,
+            'favorite': bool(self.mark_as_favorite),
+            'user_id': self.env.user.id,
+            'body_arch': html,
+            'body_html': html,
+        }
+
+        self.env[
+            'mailing.mailing'
+        ].create(vals)
 
         return {
             'type': 'ir.actions.client',

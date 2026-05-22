@@ -40,7 +40,6 @@
                         <field name="generated_body"
                                string="Email Body"
                                widget="html"
-                               readonly="1"
                                colspan="2"
                                options="{'resizable': true, 'collaborative': false}"/>
 

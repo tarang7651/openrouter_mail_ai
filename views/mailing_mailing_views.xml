@@ -22,6 +22,11 @@
                             string="🎨 AI Template by Style"
                             class="btn btn-sm btn-outline-info"
                             title="Generate a ready-to-use email template by style (promotional, newsletter, welcome, etc.)"/>
+                    <button name="action_open_insert_html_wizard"
+                            type="object"
+                            string="📄 Insert HTML"
+                            class="btn btn-sm btn-outline-secondary"
+                            title="Insert custom HTML content into the email body"/>
                 </div>
             </xpath>
 

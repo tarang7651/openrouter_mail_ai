@@ -1,6 +1,5 @@
 from odoo import models, _
 
-
 class MailingMailing(models.Model):
     _inherit = 'mailing.mailing'
 
@@ -33,6 +32,36 @@ class MailingMailing(models.Model):
                 'default_source_model': 'mailing.mailing',
                 'default_source_id': self.id,
                 'dialog_size': 'large',
+            },
+        }
+
+    def action_open_ai_subject_wizard(self):
+        """Open the AI subject line generator wizard."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('✨ AI Subject Line Generator'),
+            'res_model': 'ai.subject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_mailing_id': self.id,
+                'default_current_subject': self.subject or '',
+                'dialog_size': 'medium',
+            },
+        }
+
+    def action_open_insert_html_wizard(self):
+        """Open the wizard to insert HTML content into the mailing."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Insert HTML Content'),
+            'res_model': 'mailing.insert.html.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_id': self.id,
             },
         }
 
